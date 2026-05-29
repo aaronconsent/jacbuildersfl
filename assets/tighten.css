@@ -1,0 +1,44 @@
+/* ==========================================================================
+   tighten.css — UX cleanup overlay (injected site-wide by tighten.py).
+   Calms over-animation, removes broken widgets, and strips floating CTA
+   clutter. Pure override layer: no source markup is rewritten, so removing
+   the injected <link>/<script> fully reverts the site.
+   ========================================================================== */
+
+/* --- 1. Kill motion ------------------------------------------------------ */
+/* Snap all transitions/animations to ~instant (keeps transitionend firing,
+   so interactive components like dropdowns/accordions still function). */
+*, *::before, *::after {
+  animation-duration: 1ms !important;
+  animation-delay: 0ms !important;
+  transition-duration: 1ms !important;
+  transition-delay: 0ms !important;
+  scroll-behavior: auto !important;
+}
+/* Elementor hides elements with .elementor-invisible until its entrance-
+   animation JS reveals them — force them permanently visible so nothing
+   disappears once the animations are neutralized. */
+.elementor-invisible { opacity: 1 !important; visibility: visible !important; }
+.animated, .elementor-invisible {
+  animation: none !important;
+  transform: none !important;
+}
+/* Neutralize hover "grow"/scale micro-animations. */
+[class*="elementor-animation-"]:hover,
+[class*="elementor-animation-"]:focus {
+  transform: none !important;
+}
+
+/* --- 2. Remove broken Owens Corning roof-designer widget ----------------- */
+/* The embedded TruDefinition iframe times out / never loads. Hide the widget
+   and any popup that wraps it. :has() handles modern browsers; tighten.js
+   removes the nodes as a fallback. */
+.oc_shingle_view,
+.elementor-widget-html:has(.oc_shingle_view) { display: none !important; }
+
+/* --- 3. Strip floating CTA clutter --------------------------------------- */
+.e-contact-buttons,                 /* duplicate floating phone buttons      */
+.elementor-fixed,                   /* floating calendar/scheduling button   */
+.grecaptcha-badge {                 /* two reCAPTCHA badges                   */
+  display: none !important;
+}
